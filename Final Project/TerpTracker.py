@@ -33,10 +33,51 @@ class Course:
             self.courses.append(course)
 
         
-    
-    
-    
-    
+class Grades:
+
+    def __init__(self, grade, gpa, num_of_classes):
+
+        self.grade = grade
+        self.gpa = gpa
+
+    """The calculate_grade method returns an integer based on an integer
+    that is the number of classes the user took, and the string that the
+    user provides. There will be a user_input that asks the user for the
+    letter grade they received on a certain course. Then, the integer
+    returned will be the gpa.
+    """
+    def calculate_grade(grade):
+
+        total_grade = 0
+        grade = grade.upper()
+        if grade == "A+" or grade == "A":
+            total_grade += 4.0
+        elif grade == "A-":
+            total_grade += 3.7
+        elif grade == "B+":
+            total_grade += 3.3
+        elif grade == "B":
+            total_grade += 3.0
+        elif grade == "B-":
+            total_grade += 2.7
+        elif grade == "C+":
+            total_grade += 2.3
+        elif grade == "C":
+            total_grade += 2.0
+        elif grade == "C-":
+            total_grade += 1.7
+        elif grade == "D+":
+            total_grade += 1.3
+        elif grade == "D":
+            total_grade += 1
+        elif grade == "D-":
+            total_grade += 0.7
+        elif grade == "F":
+            total_grade += 0
+        else:
+            raise ValueError("This grade is not a grade, please try again")
+
+        return total_grade    
     
 def main():
     """Main execution logic for the GPA and Degree Tracker."""   
