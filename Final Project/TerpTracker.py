@@ -10,7 +10,7 @@ class Course:
     Represents a single course with its name, credits, and grade.
     """
 
-    def __init__(Self, name, credits, grade):
+    def __init__(self, name, credits, grade):
         self.name = name
         self.credits = credits
         self.grade = grade
@@ -32,14 +32,16 @@ class Course:
 
             self.courses.append(course)
 
-        def main():
-            """
-            Main execution logic for the tracker.
-            """
-            # Thius is where we put logic persistent strong and user input
-
-            print("Welcome to the Terp Tracker!")
+        
+    
+    
+    
+    
+    
+def main():
+    """Main execution logic for the GPA and Degree Tracker."""   
+    print("Welcome to the Terp Tracker!")
+    # TODO: add persistent storage and user input logic
 
 if __name__ == "__main__":
     main()
-    
