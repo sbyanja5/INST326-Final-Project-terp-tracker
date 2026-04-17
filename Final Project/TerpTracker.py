@@ -27,10 +27,21 @@ class Course:
             self.courses = []
         
         def add_course(self, course):
-            """Adds a course to the semester.
-            """ 
-
             self.courses.append(course)
+
+        def calculate_gpa(self):
+            total_points = 0
+            total_credit = 0
+
+            for course in self.courses:
+                grade_point = Grade.calcualate_grade(course.grade)
+                total_points += grade_points * course.credits
+                total_credits += course.credits
+
+            if total_credit == 0:
+                return 0
+
+            return total_points / total_credits
 
         
 class Grades:
