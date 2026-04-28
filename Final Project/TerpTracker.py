@@ -50,6 +50,16 @@ class Course:
                 float: Total credit hours for the semester
             """
             return sum(course.credits for course in self.courses)
+        def to_dict(self):
+            """
+            Convert this Semester and all its courses to a dictionary for JSON serialization.
+            Returns:
+                dict: A dictionary with 'term_name' and a list of course dicts.
+            """
+            return {
+                'term_name': self.term_name,
+                'courses': [course.to__dict_() for course in self.courses]
+            }
         
 class Grades:
 
