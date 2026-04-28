@@ -42,7 +42,14 @@ class Course:
                 return 0
 
             return total_points / total_credits
+        def get_total_credits(self):
+            """
+            Sum all credit hours for courses in this semester
 
+            Returns:
+                float: Total credit hours for the semester
+            """
+            return sum(course.credits for course in self.courses)
         
 class Grades:
 
@@ -90,6 +97,7 @@ class Grades:
 
         return total_grade    
     
+
 def main():
     """Main execution logic for the GPA and Degree Tracker."""   
     print("Welcome to the Terp Tracker!")
