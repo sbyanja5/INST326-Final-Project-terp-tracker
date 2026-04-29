@@ -74,38 +74,30 @@ class Grades:
     letter grade they received on a certain course. Then, the integer
     returned will be the gpa.
     """
-    def calculate_grade(grade):
+    def calculate_grade(grades):
+
+        possible_grades = {
+            "A+": 4.0, "A": 4.0, "A-": 3.7,
+            "B+": 3.3, "B": 3.0, "B-": 2.7,
+            "C+": 2.3, "C": 2.0, "C-": 1.7,
+            "D+": 1.3, "D": 1.0, "D-": 0.7,
+            "F":0.0
+        }
+
+        if not grades:
+            return 0
+
 
         total_grade = 0
-        grade = grade.upper()
-        if grade == "A+" or grade == "A":
-            total_grade += 4.0
-        elif grade == "A-":
-            total_grade += 3.7
-        elif grade == "B+":
-            total_grade += 3.3
-        elif grade == "B":
-            total_grade += 3.0
-        elif grade == "B-":
-            total_grade += 2.7
-        elif grade == "C+":
-            total_grade += 2.3
-        elif grade == "C":
-            total_grade += 2.0
-        elif grade == "C-":
-            total_grade += 1.7
-        elif grade == "D+":
-            total_grade += 1.3
-        elif grade == "D":
-            total_grade += 1
-        elif grade == "D-":
-            total_grade += 0.7
-        elif grade == "F":
-            total_grade += 0
-        else:
-            raise ValueError("This grade is not a grade, please try again")
+        for grade in grades:
+            grade = grade.upper()
+            if grade not in possible_grades:
+                raiseValueError("This grade is not a possible grade, please try again")
+            total_grade += possible_grades[grade]
 
-        return total_grade    
+        return total_grade / len(grades)
+
+      
     
 
 def main():
