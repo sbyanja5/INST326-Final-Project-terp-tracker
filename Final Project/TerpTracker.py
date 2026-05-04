@@ -62,6 +62,20 @@ class Semester:
                 bool: True if credits >= 12, False otherwise.
             """
             return self.get_total_credits() >= 12
+
+        def get_academic_standing(self):
+            """
+            Evaluates the semester GPA to determine academic standing.
+            Returns:
+                str: A message indicating if the student is on the Dean's List, in Good Standing, or on Academic Probation.
+            """
+            if current_gpa >= 3.5:
+                return "Dean's List"
+            elif current_gpa >= 2.0:
+                return "Good Standing"
+            else:
+                return "Academic Probation"
+                
     
         def to_dict(self):
             """
