@@ -16,7 +16,7 @@ class Course:
         self.grade = grade
 
 
-    class Semester: 
+class Semester: 
         """
         Represents a semester containing multiple courses.
     
@@ -27,6 +27,10 @@ class Course:
             self.courses = []
         
         def add_course(self, course):
+            """
+            Adds a course object to the semester's interal list of courses. 
+            Arguments are course (course): An instance of the Course class.
+            """
             self.courses.append(course)
 
         def calculate_gpa(self):
@@ -50,6 +54,15 @@ class Course:
                 float: Total credit hours for the semester
             """
             return sum(course.credits for course in self.courses)
+        def is_full_time(self):
+            """
+            Determines if the student is enrolled full time, which is 12+ credits.
+
+            Returns:
+                bool: True if credits >= 12, False otherwise.
+            """
+            return self.get_total_credits() >= 12
+    
         def to_dict(self):
             """
             Convert this Semester and all its courses to a dictionary for JSON serialization.
@@ -92,7 +105,7 @@ class Grades:
         for grade in grades:
             grade = grade.upper()
             if grade not in possible_grades:
-                raiseValueError("This grade is not a possible grade, please try again")
+                raise ValueError("This grade is not a possible grade, please try again.")
             total_grade += possible_grades[grade]
 
         return total_grade / len(grades)
