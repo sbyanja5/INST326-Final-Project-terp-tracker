@@ -3,7 +3,53 @@ Interactive GPA and Degree Tracker for University of Maryland students.
 This program allows users to input their courses, credits, and grades to calculate their GPA and track their progress in the semester. 
 It provides a user-friendly interface for managing academic records and planning future coursework.
 """
+import json
+import os
 
+def save_data(semesters, filename="terp_tracker_data.json"):
+    """
+    Saves the list of Semester objects to a JSON file.
+    Args:
+        semesters (list of Semester): The data to save.
+        filename (str): The name of the file to save to.
+    Returns:
+        None
+    """
+    data = [semester.to_dict() for semester in semesters]
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=4)
+
+    print(f"Data saved to {filename}.")
+
+def load_data(filename="terp_tracker_data.json"):
+    """
+    Loads Semester data from a JSON file and reconstructs the Semester and Course objects.
+    Args:
+        filename (str): The name of the file to load from.
+        Defaults to "terp_tracker_data.json".
+
+    Returns:
+        list of Semester: A list of Semester objects reconstructed from the file.
+        or an empty list if the file does not exist or is invalid.
+
+    """
+    if not os.path.exists(filename):
+        print(f"No data file found at {filename}. Starting with an empty dataset.")
+        return []
+    with open(filename, 'r') as f:
+        data = json.load(f)
+
+    semesters = []
+    for semester_data in data:
+        semester = Semester(semester_data['term_name'])
+        for course_data in semester_data['courses']:
+            course = Course(course_data['name'], 
+                            course_data['credits'], 
+                            course_data['grade'])
+            semester.add_course(course)
+        semesters.append(semester)
+        return semesters
+    
 class Course:
 
     """
@@ -34,18 +80,19 @@ class Semester:
             self.courses.append(course)
 
         def calculate_gpa(self):
-            total_points = 0
-            total_credit = 0
+            total_points = 0.0
+            total_credit = 0.0
 
             for course in self.courses:
-                grade_point = Grade.calcualate_grade(course.grade)
-                total_points += grade_points * course.credits
+                grade_point = Grades.calcualate_grade(course.grade)
+                total_points += grade_point * course.credits
                 total_credits += course.credits
 
             if total_credit == 0:
-                return 0
+                return 0.0
 
-            return total_points / total_credits
+            return round(total_points / total_credits, 2)
+        
         def get_total_credits(self):
             """
             Sum all credit hours for courses in this semester
@@ -81,11 +128,15 @@ class Semester:
             """
             Convert this Semester and all its courses to a dictionary for JSON serialization.
             Returns:
-                dict: A dictionary with 'term_name' and a list of course dicts.
+                dict: A dictionary with 'term_name' and a list of course dicts. 
+                And each course dict contains 'name', 'credits', and 'grade'.
             """
             return {
                 'term_name': self.term_name,
                 'courses': [course.to__dict_() for course in self.courses]
+                "name": self.name,
+                "credits": self.credits,
+                "grade": self.grade
             }
         
 class Grades:
@@ -126,6 +177,28 @@ class Grades:
 
       
     
+def calculate_cumulative_gpa(semesters):
+    """
+    Calcuates the cumulative GPA across multiple semesters.
+    Args:
+        semesters (list of Semester): a list of Semester objects to include in the calculation.
+    Returns:
+        float: The cumulative GPA rounded to two decimal places.
+        or 0.0 if there are no credits.
+    """
+    total_points = 0.0
+    total_credits = 0.0
+
+    for semester in semesters:
+        for course in semester.courses:
+            grade_point = Grades.calculate_grade([course.grade])
+            total_points += grade_point * course.credits
+            total_credits += course.credits
+
+    if total_credits == 0:
+        return 0.0
+
+    return round(total_points / total_credits, 2)
 
 def main():
     """Main execution logic for the GPA and Degree Tracker."""   
