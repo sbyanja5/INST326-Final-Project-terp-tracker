@@ -200,6 +200,60 @@ def calculate_cumulative_gpa(semesters):
 
     return round(total_points / total_credits, 2)
 
+def finals_calculator(current_gpa, current_creddits, target_gpa, remaining_credits):
+    """
+    Calucates the GPA needed in the remaining credits to achieve a target cumulative GPA.
+
+    Args:
+        current_gpa (float): The student's current cumulative GPA.
+        current_credits (float): The total number of credits the student has completed.
+        target_gpa (float): The desired cumulative GPA the student wants to achieve.
+        remaining_credits (float): The number of credits the student has left to complete.
+    Returns:
+        float: The GPA needed in the remaining credits to reach the target GPA, rounded to two decimal places.
+        or None if it's not possible to achieve the target GPA with the remaining credits.
+    """
+    total_credits = current_credits + remaining_credits
+    needed_points = (target_gpa * total_credits) - (current_gpa * current_credits)
+    needed_gpa = needed_points / remaining_credits
+
+    if needed_gpa > 4.0:
+        print("Target GPA is not achievable with the remaining credits.")
+        return None
+    
+    if needed_gpa < 0.0:
+        print("Target GPA is already achieved with the current GPA!")
+        return 0.0
+    
+    return round(needed_gpa, 2)
+
+def check_credit_milestones(total_credits):
+    """
+    Checks if the student has reached a credit milestone and notifies them.
+    
+    Args:
+        total_credits (float): The total number of credits the student has completed.
+    Returns:
+        str: A congratulatory message indicating the next milestone or if a milestone has been reached,    
+             or None if no milestones are reached.
+        """
+    milestones = {
+        30: "Congratulations! You've reached 30 credits - you're a sophomore!",
+        60: "Congratulations! You've reached 60 credits - you're a junior!",
+        90: "Congratulations! You've reached 90 credits - you're a senior!",
+        120: "Congratulations! You've reached 120 credits - you've completed your degree requirements!"
+    }
+
+    for milestone, message in milestones.items():
+        if total_credits >= milestone:
+            highest_milestone = milestone
+
+        if total_credits >= 30:
+            return highest_milestone
+        return None
+    
+
+
 def main():
     """Main execution logic for the GPA and Degree Tracker."""   
     print("Welcome to the Terp Tracker!")
