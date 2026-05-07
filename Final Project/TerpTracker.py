@@ -45,13 +45,6 @@ def load_data(filename="terp_tracker_data.json"):
                             course_data['grade'])
             semester.add_course(course)
         semesters.append(semester)
-<<<<<<< HEAD
-    return semesters
-    
-class Course:
-=======
-    return semesters  # BUG FIX: was indented inside the for-loop, returning after the first semester only
->>>>>>> 63ebaee0ba33d8b0b0eb316caf814332b74e21f3
 
 
 class Course:
@@ -92,7 +85,6 @@ class Course:
         }
 
 
-<<<<<<< HEAD
         def calculate_gpa(self):
             """
         Calculates the GPA for this semester based on courses and credits.
@@ -119,7 +111,6 @@ class Course:
             """
             return sum(course.credits for course in self.courses)
 
-=======
 class Semester:
     """
     Represents a semester containing multiple courses.
@@ -146,7 +137,6 @@ class Semester:
         total_points = 0.0
         total_credits = 0.0  # BUG FIX: was 'total_credit' (missing 's'), causing a NameError
                               # when the variable was later referenced as 'total_credits'
->>>>>>> 63ebaee0ba33d8b0b0eb316caf814332b74e21f3
 
         for course in self.courses:
             grade_point = Grades.calculate_grade([course.grade])  # BUG FIX 1: was Grades.calcualate_grade (typo)
@@ -204,7 +194,6 @@ class Semester:
         }
 
 
-<<<<<<< HEAD
         def get_academic_standing(self):
             """
             Evaluates the semester GPA to determine academic standing.
@@ -232,8 +221,6 @@ class Semester:
             'courses': [course.to_dict() for course in self.courses]
         }
         
-=======
->>>>>>> 63ebaee0ba33d8b0b0eb316caf814332b74e21f3
 class Grades:
 
     def __init__(self, grade, gpa, num_of_classes):
@@ -417,7 +404,7 @@ def main():
         print("\nWhat would you like to do?")
         print("1. Add a new semester")
         print("2. View academic summary")
-        print("3. Final's GPA Calculator"
+        print("3. Final's GPA Calculator")
         print("4. Save and Exit")
 
         choice = input("Enter your choice (1-4): ")
