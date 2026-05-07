@@ -48,7 +48,7 @@ def load_data(filename="terp_tracker_data.json"):
                             course_data['grade'])
             semester.add_course(course)
         semesters.append(semester)
-        return semesters
+    return semesters
     
 class Course:
 
@@ -60,6 +60,19 @@ class Course:
         self.name = name
         self.credits = credits
         self.grade = grade
+    def to_dict(self):
+        """
+        Converts this Course to a dictionary for JSON serialization.
+
+        Returns:
+            dict: A dictionary with 'name', 'credits', and 'grade'.
+        """
+        return {
+            "name": self.name,
+            "credits": self.credits,
+            "grade": self.grade
+        }
+
 
 
 class Semester: 
@@ -80,19 +93,25 @@ class Semester:
             self.courses.append(course)
 
         def calculate_gpa(self):
-            total_points = 0.0
-            total_credit = 0.0
+            """
+        Calculates the GPA for this semester based on courses and credits.
 
-            for course in self.courses:
-                grade_point = Grades.calcualate_grade(course.grade)
-                total_points += grade_point * course.credits
-                total_credits += course.credits
+        Returns:
+            float: The semester GPA rounded to 2 decimal places,
+                   or 0.0 if no credits have been recorded.
+            """
+        total_points = 0.0
+        total_credits = 0.0
 
-            if total_credit == 0:
-                return 0.0
+        for course in self.courses:
+            grade_point = Grades.calculate_grade([course.grade])
+            total_points += grade_point * course.credits
+            total_credits += course.credits
 
-            return round(total_points / total_credits, 2)
-        
+        if total_credits == 0:
+           return 0.0
+        return round(total_points / total_credits, 2)
+
         def get_total_credits(self):
             """
             Sum all credit hours for courses in this semester
@@ -124,21 +143,18 @@ class Semester:
             else:
                 return "Academic Probation"
                 
-    
-        def to_dict(self):
+         def to_dict(self):
             """
-            Convert this Semester and all its courses to a dictionary for JSON serialization.
-            Returns:
-                dict: A dictionary with 'term_name' and a list of course dicts. 
-                And each course dict contains 'name', 'credits', and 'grade'.
+            Converts this Semester and all its courses to a dictionary
+        for JSON serialization.
+
+        Returns:
+            dict: A dictionary with 'term_name' and a list of course dicts.
             """
-            return {
-                'term_name': self.term_name,
-                'courses': [course.to__dict_() for course in self.courses]
-                "name": self.name,
-                "credits": self.credits,
-                "grade": self.grade
-            }
+        return {
+            'term_name': self.term_name,
+            'courses': [course.to_dict() for course in self.courses]
+        }
         
 class Grades:
 
@@ -319,6 +335,38 @@ def add_semester_ui():
 def main():
     """Main execution logic for the GPA and Degree Tracker."""   
     print("Welcome to the Terp Tracker!")
+    semesters = load_data()
+
+    while True:
+        print("\nWhat would you like to do?")
+        print("1. Add a new semester")
+        print("2. View academic summary")
+        print("3. Final's GPA Calculator"
+        print("4. Save and Exit")
+
+        choice = input("Enter your choice (1-4): ")
+
+        if choice == "1":
+            semester = add_semester_ui()
+            semesters.append(semester)
+        elif choice == "2":
+            display_summary(semesters)
+        elif choice == "3":
+            current_gpa = float(input("Enter your current cumulative GPA: "))
+            current_credits = float(input("Enter your total completed credits: "))
+            target_gpa = float(input("Enter your target cumulative GPA: "))
+            remaining_credits = float(input("Enter the number of credits you have left to complete:"))
+            result = finals_calculator(current_gpa, current_credits, target_gpa, remaining_credits)
+            if result is not None:
+                print(f"You need to earn a GPA of {result} in your remaining credits to reach your target GPA.")
+        elif choice == "4":
+            save_data(semesters)
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+
     # TODO: add persistent storage and user input logic
 
 if __name__ == "__main__":
