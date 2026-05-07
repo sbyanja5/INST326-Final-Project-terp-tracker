@@ -252,7 +252,37 @@ def check_credit_milestones(total_credits):
         if total_credits >= 30:
             return highest_milestone
         return None
-    
+
+def display_summary(semesters):
+    """
+    Prints a full summary of all semesters, GPAs, and credits.
+    Args:
+        semesters(list of Semester): All semesters to summarize.
+    """
+    if len(semesters) == 0:
+        print("No semesters recorded yet.")
+        return
+
+    print ("\n===== ACADEMIC SUMMARY =====")
+    for semester in semesters:
+        print (f"\n{semester.term_name}")
+        print (f" Courses:")
+        for course in semester.courses:
+            print (f"     {course.name}  |  {course.credits} credits | {course.grade}")
+        print (f"  Semester GPA: {semester.calculate_gpa()}")
+        print (f"  Total Credits: {semester.get_total_credits()}")
+        print (f"  Academic Standing: {semester.get_academic_standing()}")
+        print (f"  Full-Time Status: {'Full-Time' if semester.is_full_time() else 'Part-Time'}")
+                                  
+    total_credits = 0.0
+    for semester in semesters:
+        total_credits += semester.get_total_credits()
+
+    cumulative_gpa = calculate_cumulative_gpa(semesters)
+    print("\nCumulative GPA:", cumulative_gpa)
+    print("Total Credits Earned:", total_credits)
+    print("===========================\n")
+
 def add_course_ui():
     """
     Command line interface for creating a Course object. 
