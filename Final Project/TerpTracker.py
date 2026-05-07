@@ -116,6 +116,7 @@ class Semester:
             Returns:
                 str: A message indicating if the student is on the Dean's List, in Good Standing, or on Academic Probation.
             """
+            current_gpa = self.calculate_gpa()
             if current_gpa >= 3.5:
                 return "Dean's List"
             elif current_gpa >= 2.0:
