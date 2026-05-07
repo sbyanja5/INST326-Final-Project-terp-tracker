@@ -208,7 +208,7 @@ class Semester:
             else:
                 return "Academic Probation"
                 
-         def to_dict(self):
+        def to_dict(self):
             """
             Converts this Semester and all its courses to a dictionary
         for JSON serialization.
