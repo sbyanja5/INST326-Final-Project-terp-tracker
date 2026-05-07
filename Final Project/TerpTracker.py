@@ -252,8 +252,39 @@ def check_credit_milestones(total_credits):
             return highest_milestone
         return None
     
+def add_course_ui():
+    """
+    Command line interface for creating a Course object. 
 
+    Returns:
+        Courses: A new Course object created from user input.
+    """
+    name = input("Enter course name: ")
+    credits = float(input("Enter course credits: "))
+    grade = input("Enter letter grade: ")
+    
+    return Course(name, credits, grade)
 
+def add_semester_ui():
+    """
+    Command line interface for creating a Semester and adding courses to it. 
+
+    Returns:
+        Semester: A completed Semester object. 
+    """
+    term_name = input("Enter semester name (example: Fall 2026): ")
+    semester = Semester(term_name)
+    
+    while True:
+        print("\nAdd a course")
+        course = add_course_ui()
+        semester.add_course(course)
+        another = input("Add another course? (yes/no): ").lower()
+        
+        if another != "yes":
+            break
+    return semester
+    
 def main():
     """Main execution logic for the GPA and Degree Tracker."""   
     print("Welcome to the Terp Tracker!")
