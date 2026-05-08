@@ -28,22 +28,13 @@ class TestTerpTracker(unittest.TestCase):
         # Add the course
         test_semester.add_course(test_course)
 
-        # Check if the list now has exactly 1 course
         self.assertEqual(len(test_semester.courses), 1)
         self.assertEqual(test_semester.courses[0].name, "INST326")
 
-    # BUG FIX: was a standalone function outside the class — unittest.main() would
-    # never discover or run it. Moved inside TestTerpTracker and renamed with
-    # the required 'test_' prefix as a method.
     def test_finals_calculator(self):
-        # BUG FIX: finals_calculator returns None when the target is not achievable,
-        # not 4.5. The original assertion '== 4.5' was wrong.
         result = finals_calculator(3.0, 60, 3.5, 30)
         self.assertIsNone(result)
 
-        # BUG FIX: 'finals_calculator(...) == 3.5 is None' was a chained comparison
-        # that always evaluated to False. The intent is: when current GPA already
-        # exceeds the target, the function returns 0.0 (target already achieved).
         result = finals_calculator(3.8, 60, 3.5, 30)
         self.assertEqual(result, 0.0)
 
@@ -51,7 +42,6 @@ class TestTerpTracker(unittest.TestCase):
         expected = round(((3.2 * 60) - (3.0 * 45)) / 15, 2)
         self.assertEqual(finals_calculator(3.0, 45, 3.2, 15), expected)
 
-    # BUG FIX: was a standalone function outside the class — same issue as above.
     def test_check_credit_milestones(self):
         # No milestone reached
         self.assertIsNone(check_credit_milestones(20))
@@ -74,7 +64,6 @@ class TestTerpTracker(unittest.TestCase):
             "Congratulations! You've reached 90 credits - you're a senior!"
         )
 
-        # BUG FIX: missing test for the 120-credit degree completion milestone.
         self.assertEqual(
             check_credit_milestones(120),
             "Congratulations! You've reached 120 credits - you've completed your degree requirements!"
