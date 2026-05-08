@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "term_name": "Fall 2026",
+        "courses": [
+            {
+                "name": "Inst 311",
+                "credits": 3.0,
+                "grade": "A"
+            },
+            {
+                "name": "Inst 326",
+                "credits": 3.0,
+                "grade": "A"
+            },
+            {
+                "name": "Inst 327",
+                "credits": 3.0,
+                "grade": "B"
+            }
+        ]
+    }
+]

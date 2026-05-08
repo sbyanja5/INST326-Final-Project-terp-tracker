@@ -33,19 +33,24 @@ def load_data(filename="terp_tracker_data.json"):
     if not os.path.exists(filename):
         print(f"No data file found at {filename}. Starting with an empty dataset.")
         return []
-    with open(filename, 'r') as f:
-        data = json.load(f)
+    
+    try:
+        with open(filename, 'r') as f:
+            data = json.load(f)
 
-    semesters = []
-    for semester_data in data:
-        semester = Semester(semester_data['term_name'])
-        for course_data in semester_data['courses']:
-            course = Course(course_data['name'], 
-                            course_data['credits'], 
-                            course_data['grade'])
-            semester.add_course(course)
-        semesters.append(semester)
-
+        semesters = []
+        for semester_data in data:
+            semester = Semester(semester_data['term_name'])
+            for course_data in semester_data['courses']:
+                course = Course(course_data['name'], 
+                                course_data['credits'], 
+                                course_data['grade'])
+                semester.add_course(course)
+            semesters.append(semester)
+        return semesters 
+    except(json.JSONDecodeError, KeyError):
+        print("Error reading data file. Starting fresh.")
+        return []
 
 class Course:
     """
@@ -68,49 +73,7 @@ class Course:
             "credits": self.credits,
             "grade": self.grade
         }
-
-
-    def to_dict(self):
-        """
-        Convert this Course to a dictionary for JSON serialization.
-        BUG FIX: method was missing from Course entirely; Semester.to_dict() called
-        course.to__dict_() which had the wrong name AND pointed here, so it needed to exist.
-        Returns:
-            dict: A dictionary with 'name', 'credits', and 'grade'.
-        """
-        return {
-            "name": self.name,
-            "credits": self.credits,
-            "grade": self.grade
-        }
-
-
-        def calculate_gpa(self):
-            """
-        Calculates the GPA for this semester based on courses and credits.
-
-        Returns:
-            float: The semester GPA rounded to 2 decimal places,
-                   or 0.0 if no credits have been recorded.
-            """
-        total_points = 0.0
-        total_credits = 0.0
-
-        for course in self.courses:
-            grade_point = Grades.calculate_grade([course.grade])
-            total_points += grade_point * course.credits
-            total_credits += course.credits
-
-        if total_credits == 0:
-           return 0.0
-        return round(total_points / total_credits, 2)
-
-        def get_total_credits(self):
-            """
-            Sum all credit hours for courses in this semester
-            """
-            return sum(course.credits for course in self.courses)
-
+        
 class Semester:
     """
     Represents a semester containing multiple courses.
@@ -135,14 +98,12 @@ class Semester:
             float: The semester GPA rounded to two decimal places.
         """
         total_points = 0.0
-        total_credits = 0.0  # BUG FIX: was 'total_credit' (missing 's'), causing a NameError
-                              # when the variable was later referenced as 'total_credits'
-
+        total_credits = 0.0                          
         for course in self.courses:
-            grade_point = Grades.calculate_grade([course.grade])  # BUG FIX 1: was Grades.calcualate_grade (typo)
-                                                                   # BUG FIX 2: pass grade as a list — calculate_grade expects one
+            grade_point = Grades.calculate_grade([course.grade])  
+                                                                  
             total_points += grade_point * course.credits
-            total_credits += course.credits  # BUG FIX: was 'total_credit' (missing 's')
+            total_credits += course.credits  
 
         if total_credits == 0:
             return 0.0
@@ -185,49 +146,13 @@ class Semester:
         Returns:
             dict: A dictionary with 'term_name' and a list of course dicts.
         """
-        # BUG FIX 1: was calling course.to__dict_() — double underscores, wrong method name
-        # BUG FIX 2: was also referencing self.name / self.credits / self.grade,
-        #            which Semester does not have (those belong on Course)
-        return {
-            'term_name': self.term_name,
-            'courses': [course.to_dict() for course in self.courses]
-        }
-
-
-        def get_academic_standing(self):
-            """
-            Evaluates the semester GPA to determine academic standing.
-            Returns:
-                str: A message indicating if the student is on the Dean's List, in Good Standing, or on Academic Probation.
-            """
-            current_gpa = self.calculate_gpa()
-            if current_gpa >= 3.5:
-                return "Dean's List"
-            elif current_gpa >= 2.0:
-                return "Good Standing"
-            else:
-                return "Academic Probation"
-                
-        def to_dict(self):
-            """
-            Converts this Semester and all its courses to a dictionary
-        for JSON serialization.
-
-        Returns:
-            dict: A dictionary with 'term_name' and a list of course dicts.
-            """
         return {
             'term_name': self.term_name,
             'courses': [course.to_dict() for course in self.courses]
         }
         
 class Grades:
-
-    def __init__(self, grade, gpa, num_of_classes):
-        self.grade = grade
-        self.gpa = gpa
-        self.num_of_classes = num_of_classes  # BUG FIX: was accepted but never stored
-
+    @staticmethod
     def calculate_grade(grades):
         """
         Returns the average GPA point value for a list of letter grades.
@@ -309,33 +234,6 @@ def finals_calculator(current_gpa, current_credits, target_gpa, remaining_credit
 
     return round(needed_gpa, 2)
 
-def check_credit_milestones(total_credits):
-    """
-    Checks if the student has reached a credit milestone and notifies them.
-
-    Args:
-        total_credits (float): Total credits the student has completed.
-    Returns:
-        str: A congratulatory message if a milestone has been reached,
-             or None if no milestone is reached.
-    """
-    milestones = {
-        30: "Congratulations! You've reached 30 credits - you're a sophomore!",
-        60: "Congratulations! You've reached 60 credits - you're a junior!",
-        90: "Congratulations! You've reached 90 credits - you're a senior!",
-        120: "Congratulations! You've reached 120 credits - you've completed your degree requirements!"
-    }
-
-    # BUG FIX 1: 'if total_credits >= 30' and 'return None' were both indented inside
-    #             the for-loop body, so the loop never ran past the first milestone check.
-    # BUG FIX 2: was returning 'highest_milestone' (an int key) instead of the message string.
-    highest_message = None
-    for milestone, message in milestones.items():
-        if total_credits >= milestone:
-            highest_message = message
-
-    return highest_message
-
 def display_summary(semesters):
     """
     Prints a full summary of all semesters, GPAs, and credits.
@@ -362,24 +260,15 @@ def display_summary(semesters):
         total_credits += semester.get_total_credits()
 
     cumulative_gpa = calculate_cumulative_gpa(semesters)
+    print("\n" + "="*30)
     print("\nCumulative GPA:", cumulative_gpa)
     print("Total Credits Earned:", total_credits)
-    print("===========================\n")
-
-def add_course_ui():
-    """
-    Command line interface for creating a Course object.
-    Returns:
-        Course: A new Course object created from user input.
-    """
-    name = input("Enter course name: ")
-    credits = float(input("Enter course credits: "))
-    grade = input("Enter letter grade: ")
-    return Course(name, credits, grade)
+    print("="*30+"\n")
 
 def add_semester_ui():
     """
     Command line interface for creating a Semester and adding courses to it.
+    
     Returns:
         Semester: A completed Semester object.
     """
@@ -387,13 +276,20 @@ def add_semester_ui():
     semester = Semester(term_name)
 
     while True:
-        print("\nAdd a course")
-        course = add_course_ui()
-        semester.add_course(course)
-        another = input("Add another course? (yes/no): ").lower()
+        name = input("Enter course name: ")
+
+        try:
+            credits = float(input("Enter course credits: "))
+            grade = input("Enter letter grade: ").upper()
+            semester.add_course(Course(name, credits, grade))
+        except ValueError:
+            print("Invalid input. Course not added.")
+
+        another = input("Add another course? (yes/no): ").lower()     
         if another != "yes":
             break
-    return semester
+    return semester 
+ 
 
 def main():
     """Main execution logic for the GPA and Degree Tracker."""
@@ -428,9 +324,6 @@ def main():
             break
         else:
             print("Invalid choice, please try again.")
-
-
-    # TODO: add persistent storage and user input logic
 
 if __name__ == "__main__":
     main()
