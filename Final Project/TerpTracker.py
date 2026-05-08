@@ -206,8 +206,7 @@ def calculate_cumulative_gpa(semesters):
     return round(total_points / total_credits, 2)
 
 def finals_calculator(current_gpa, current_credits, target_gpa, remaining_credits):
-    # BUG FIX: parameter was spelled 'current_creddits' (double 'd'), causing a NameError
-    # when the function body referenced 'current_credits'
+    
     """
     Calculates the GPA needed in remaining credits to achieve a target cumulative GPA.
 
